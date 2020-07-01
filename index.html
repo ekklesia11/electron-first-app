@@ -2,27 +2,38 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Hello World!</title>
-    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+    <title>Shopping list</title>
     <meta
       http-equiv="Content-Security-Policy"
       content="script-src 'self' 'unsafe-inline';"
     />
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using node
+    <h1>Shopping List</h1>
+    <ul></ul>
     <script>
-      document.write(process.versions.node);
+      const { ipcRenderer } = require("electron");
+      const ul = document.querySelector("ul");
+
+      // Add item
+      ipcRenderer.on("item:add", function (e, item) {
+        const li = document.createElement("li");
+        const itemText = document.createTextNode(item);
+        li.append(itemText);
+        ul.append(li);
+      });
+
+      // Clear item
+      ipcRenderer.on("item:clear", function () {
+        ul.innerHTML = "";
+      });
+
+      // Remove item
+      ul.addEventListener("dblclick", removeItem);
+
+      function removeItem(e) {
+        e.target.remove();
+      }
     </script>
-    , Chrome
-    <script>
-      document.write(process.versions.chrome);
-    </script>
-    , and Electron
-    <script>
-      document.write(process.versions.electron);
-    </script>
-    .
   </body>
 </html>
